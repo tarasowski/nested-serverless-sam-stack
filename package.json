@@ -1,0 +1,18 @@
+{
+  "name": "nested-stack-sam",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "folder": "rm -rf build && mkdir build",
+    "bucket": "aws s3api create-bucket --bucket elastic-brain-stack --region eu-west-1 --create-bucket-configuration LocationConstraint=eu-west-1",
+    "package": "aws cloudformation package --template-file parent.yaml --output-template-file build/output.yaml --s3-bucket dimitri-sam-aws-nested-stacks-test",
+    "deploy": "aws cloudformation deploy --template-file build/output.yaml --stack-name parent-child-test  --capabilities CAPABILITY_AUTO_EXPAND",
+    "qd": "npm run folder && npm run package && npm run deploy",
+    "update": "node ./utils/index.js",
+    "monitor": "nodemon -e txt,graphql  --watch ./graphql ./utils/index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}

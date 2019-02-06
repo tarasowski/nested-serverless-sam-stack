@@ -1,0 +1,41 @@
+AWSTemplateFormatVersion: 2010-09-09
+Transform: AWS::Serverless-2016-10-31
+Description: The parent stack test
+
+Parameters:
+  APIName:
+    Type: String
+    Default: myparentapi
+  APIStage: 
+    Type: String
+    Default: development
+
+Globals:
+  Function:
+    Runtime: nodejs8.10
+    Timeout: 5
+    MemorySize: 128
+
+Resources:
+  parentTable:
+    Type: AWS::DynamoDB::Table
+    Description: This is the parent table
+    Properties:
+      TableName: !Sub ${APIName}-parent-${APIStage}
+      AttributeDefinitions:
+        - AttributeName: id
+          AttributeType: S
+      KeySchema:
+        - AttributeName: id
+          KeyType: HASH
+      ProvisionedThroughput:
+        ReadCapacityUnits: 1
+        WriteCapacityUnits: 1
+
+  childApplication:
+    Type: AWS::Serverless::Application 
+    Properties:
+      Location: child.yaml
+      Parameters:
+        APIName: !Ref APIName
+        APIStage: !Ref APIStage
